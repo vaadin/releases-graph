@@ -3,7 +3,6 @@
   "license": "UNLICENSED",
   "dependencies": {
     "@polymer/polymer": "3.5.1",
-    "@vaadin-component-factory/vcf-nav": "1.0.6",
     "@vaadin/accordion": "24.0.0-rc1",
     "@vaadin/app-layout": "24.0.0-rc1",
     "@vaadin/avatar": "24.0.0-rc1",
@@ -97,7 +96,6 @@
   "vaadin": {
     "dependencies": {
       "@polymer/polymer": "3.5.1",
-      "@vaadin-component-factory/vcf-nav": "1.0.6",
       "@vaadin/accordion": "24.0.0-rc1",
       "@vaadin/app-layout": "24.0.0-rc1",
       "@vaadin/avatar": "24.0.0-rc1",
@@ -188,7 +186,7 @@
       "workbox-core": "6.5.4",
       "workbox-precaching": "6.5.4"
     },
-    "hash": "e51d3ee752fbdc77e3ab5f7cd7c0b52269a5a6c9a7c929ad99698147a6ef92d5"
+    "hash": "e23a3e1f4bc4a2bfbe66624d0ded62dcb8f0df9ee8a373593325af11bf65afe7"
   },
   "overrides": {
     "@vaadin/bundles": "$@vaadin/bundles",
@@ -261,7 +259,6 @@
     "construct-style-sheets-polyfill": "$construct-style-sheets-polyfill",
     "lit": "$lit",
     "@polymer/polymer": "$@polymer/polymer",
-    "@vaadin-component-factory/vcf-nav": "$@vaadin-component-factory/vcf-nav",
     "proj4": "$proj4",
     "@vaadin/vaadin-themable-mixin": "$@vaadin/vaadin-themable-mixin",
     "date-fns": "$date-fns",

@@ -1,6 +1,5 @@
 package com.vaadin.hackathon.views.hellovaadin;
 
-import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 
 import org.commonmark.node.Node;
@@ -26,18 +25,15 @@ public class VersionsTimelineChart extends Chart {
 
     private final GitHubService gitHubService;
 
-    public VersionsTimelineChart(final GitHubService gitHubService, final MajorVersionInfo majorVersionInfo) throws IOException {
+    public VersionsTimelineChart(final GitHubService gitHubService, final MajorVersionInfo majorVersionInfo) {
         this.gitHubService = gitHubService;
 
         final Configuration configuration = this.getConfiguration();
         configuration.getChart().setType(ChartType.TIMELINE);
-        configuration.setTitle("Timeline of releases in this version");
         configuration.getTooltip().setEnabled(true);
         configuration.getxAxis().setVisible(false);
         configuration.getxAxis().setType(AxisType.DATETIME);
         configuration.getyAxis().setVisible(false);
-
-        configuration.addSeries(this.prepareVersionsTimelineChartData(majorVersionInfo));
 
         this.addPointClickListener(event -> {
             final String versionName = event.getItem().getName();
@@ -53,9 +49,13 @@ public class VersionsTimelineChart extends Chart {
             dialog.add(new Html(htmlReleaseNotes));
             dialog.open();
         });
+        this.updateChart(majorVersionInfo);
+
+        this.setHeightFull();
+        this.setWidthFull();
     }
 
-    private DataSeries prepareVersionsTimelineChartData(final MajorVersionInfo majorVersionInfo) {
+    private DataSeries prepareChartData(final MajorVersionInfo majorVersionInfo) {
         final var itemTimelines = majorVersionInfo.getAllVersions()
                                                   .stream()
                                                   .map(item -> new DataSeriesItemTimeline(Long.valueOf(item.getReleasedOn().toInstant().toEpochMilli()), item.getVersion(), "",
@@ -76,7 +76,8 @@ public class VersionsTimelineChart extends Chart {
     }
 
     public void updateChart(final MajorVersionInfo majorVersionInfo) {
-        final DataSeries series = this.prepareVersionsTimelineChartData(majorVersionInfo);
+        this.getConfiguration().setTitle("Timeline of releases in this version - " + majorVersionInfo.getMajorVersion());
+        final DataSeries series = this.prepareChartData(majorVersionInfo);
         this.getConfiguration().setSeries(series);
         this.drawChart(true);
     }

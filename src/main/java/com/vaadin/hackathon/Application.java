@@ -17,7 +17,6 @@ import com.vaadin.flow.theme.Theme;
 @SpringBootApplication
 @Theme(value = "hackathon-24")
 @NpmPackage(value = "line-awesome", version = "1.3.0")
-@NpmPackage(value = "@vaadin-component-factory/vcf-nav", version = "1.0.6")
 @PropertySources({
                    @PropertySource("classpath:application.properties"),
                    @PropertySource("classpath:password.properties")
