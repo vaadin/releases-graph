@@ -13,12 +13,14 @@ import java.util.List;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.revwalk.RevWalk;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
 public class GitService {
 
-    private static String REPO_PATH = "C:\\Users\\Sujoy\\vaadin\\platform";
+    @Value("${github.repository.path}")
+    private String githubRepositoryPath;
 
     public List<MajorVersionInfo> consolidatedVersionsInfo() throws IOException {
         final var versionMap = new HashMap<String, List<VersionDetails>>();
@@ -49,7 +51,7 @@ public class GitService {
     public List<VersionDetails> fetchVersionDetails() throws IOException {
         final var versionDetails = new ArrayList<VersionDetails>();
 
-        final var repositoryFile = Path.of(REPO_PATH).toFile();
+        final var repositoryFile = Path.of(this.githubRepositoryPath).toFile();
         final var git = Git.open(repositoryFile);
         final var repository = git.getRepository();
 
