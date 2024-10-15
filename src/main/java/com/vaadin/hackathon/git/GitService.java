@@ -27,7 +27,8 @@ public class GitService {
         final var versionDetails = this.fetchVersionDetails();
 
         for (final var item : versionDetails) {
-            final var major = item.getVersion().split("\\.")[0];
+            var tmp = item.getVersion().split("\\.");
+            final var major = tmp[0] + "." + tmp[1];
             versionMap.computeIfAbsent(major, key -> new ArrayList<>()).add(item);
         }
 
@@ -37,11 +38,21 @@ public class GitService {
 
             final List<VersionDetails> details = entry.getValue();
             details.sort(Comparator.comparing(VersionDetails::getReleasedOn));
+            final List<VersionDetails> preVersions = details.stream().filter(r -> {
+                return r.getVersion().matches(".*(alpha|beta|rc).*");
+            }).toList();
 
             versionInfo.setFirstRelease(details.get(0).getReleasedOn());
             versionInfo.setLastRelease(details.get(details.size() - 1).getReleasedOn());
+
+            int idx = preVersions.size() - 1;
+            VersionDetails last = idx >= 0 ? preVersions.get(idx) : details.get(details.size() - 1);
+            versionInfo.setLastPreRelease(last.getReleasedOn());
+
             versionInfo.setNumberOfReleases(details.size());
+            versionInfo.setNumberOfPreReleases(preVersions.size());
             versionInfo.setAllVersions(details);
+            versionInfo.setPreVersions(preVersions);
             return versionInfo;
         })
                          .sorted(Comparator.comparing(MajorVersionInfo::getMajorVersion))

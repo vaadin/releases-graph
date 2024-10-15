@@ -27,14 +27,15 @@ import com.vaadin.hackathon.git.GitService;
 import com.vaadin.hackathon.git.MajorVersionInfo;
 import com.vaadin.hackathon.views.MainLayout;
 
-@PageTitle("Hello Vaadin")
-@Route(value = "hello", layout = MainLayout.class)
-@RouteAlias(value = "", layout = MainLayout.class)
+@PageTitle("Platform Releases")
+@Route(value = "", layout = MainLayout.class)
 public class HelloVaadinView extends VerticalLayout {
     private final GitService gitService;
     private final GitHubService gitHubService;
 
     private final List<MajorVersionInfo> consolidatedVersionsInfo;
+
+    private boolean isPre = false;
 
     private VersionsTimelineChart versionsTimelineChart;
     private HorizontalLayout chartArea;
@@ -54,19 +55,24 @@ public class HelloVaadinView extends VerticalLayout {
         this.chartArea.setHeightFull();
         this.chartArea.setWidthFull();
 
+        final MajorVersionInfo majorVersionInfo = this.consolidatedVersionsInfo.get(consolidatedVersionsInfo.size() -1);
+        System.err.println(majorVersionInfo.getAllVersions());
+        this.versionsTimelineChart = new VersionsTimelineChart(this.gitHubService, majorVersionInfo);
+
         final var radioGroup = new RadioButtonGroup<ChartChoice>();
         radioGroup.setLabel("Chart Type");
         radioGroup.setItems(ChartChoice.values());
         radioGroup.addValueChangeListener(event -> {
             this.chartArea.removeAll();
-
             final var chart = switch (event.getValue()) {
-                case BY_RELEASE_COUNT -> this.chartByReleaseCount();
-                case BY_TIME_SPAN -> this.chartByTimeSpan();
+                case BY_RELEASE_COUNT -> this.chartByReleaseCount(false);
+                case BY_PRE_RELEASE_COUNT -> this.chartByReleaseCount(true);
+                case BY_RELEASE_TIME_SPAN -> this.chartByTimeSpan(false);
+                case BY_PRE_RELEASE_TIME_SPAN -> this.chartByTimeSpan(true);
             };
             this.chartArea.add(chart);
         });
-        radioGroup.setValue(ChartChoice.BY_RELEASE_COUNT);
+        radioGroup.setValue(ChartChoice.BY_PRE_RELEASE_COUNT);
 
         final var header = new HorizontalLayout();
         header.addAndExpand(radioGroup);
@@ -74,9 +80,6 @@ public class HelloVaadinView extends VerticalLayout {
         header.addClassName(LumoUtility.AlignItems.CENTER);
 
         this.add(header, this.chartArea);
-
-        final MajorVersionInfo majorVersionInfo = this.consolidatedVersionsInfo.get(0);
-        this.versionsTimelineChart = new VersionsTimelineChart(this.gitHubService, majorVersionInfo);
         this.add(this.versionsTimelineChart);
     }
 
@@ -137,14 +140,16 @@ public class HelloVaadinView extends VerticalLayout {
         return spreadsheet;
     }
 
-    private VersionsBarChart chartByReleaseCount() {
-        final var barChart = new VersionsBarChart(this.consolidatedVersionsInfo);
+    private VersionsBarChart chartByReleaseCount(boolean isPre) {
+        versionsTimelineChart.setPre(isPre);
+        final var barChart = new VersionsBarChart(this.consolidatedVersionsInfo, isPre);
         barChart.addPointClickListener(this::updateTimelineChart);
         return barChart;
     }
 
-    private VersionsXRangeChart chartByTimeSpan() {
-        final var xRangeChart = new VersionsXRangeChart(this.consolidatedVersionsInfo);
+    private VersionsXRangeChart chartByTimeSpan(boolean isPre) {
+        versionsTimelineChart.setPre(isPre);
+        final var xRangeChart = new VersionsXRangeChart(this.consolidatedVersionsInfo, isPre);
         xRangeChart.addPointClickListener(this::updateTimelineChart);
         return xRangeChart;
     }
@@ -156,8 +161,10 @@ public class HelloVaadinView extends VerticalLayout {
     }
 
     private enum ChartChoice {
+        BY_PRE_RELEASE_COUNT("by pre-release count"),
+        BY_PRE_RELEASE_TIME_SPAN("by pre-release time span"),
         BY_RELEASE_COUNT("by release count"),
-        BY_TIME_SPAN("by time span");
+        BY_RELEASE_TIME_SPAN("by release time span");
 
         private String description;
 

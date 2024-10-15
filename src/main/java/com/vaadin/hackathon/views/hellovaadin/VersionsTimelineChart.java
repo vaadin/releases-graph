@@ -24,6 +24,7 @@ import com.vaadin.hackathon.git.MajorVersionInfo;
 public class VersionsTimelineChart extends Chart {
 
     private final GitHubService gitHubService;
+    private boolean isPre;
 
     public VersionsTimelineChart(final GitHubService gitHubService, final MajorVersionInfo majorVersionInfo) {
         this.gitHubService = gitHubService;
@@ -55,13 +56,24 @@ public class VersionsTimelineChart extends Chart {
         this.setWidthFull();
     }
 
+    public void setPre(boolean isPre) {
+        this.isPre = isPre;
+    }
+
     private DataSeries prepareChartData(final MajorVersionInfo majorVersionInfo) {
         final var itemTimelines = majorVersionInfo.getAllVersions()
                                                   .stream()
+                                                  .filter(item -> {
+                                                      return isPre ? item.getVersion().matches(".*(alpha|beta|rc).*") : true;
+                                                  })
                                                   .map(item -> new DataSeriesItemTimeline(Long.valueOf(item.getReleasedOn().toInstant().toEpochMilli()), item.getVersion(), "",
                                                                                           item.getReleasedOn().format(DateTimeFormatter.RFC_1123_DATE_TIME)))
                                                   .map(DataSeriesItem.class::cast)
                                                   .toList();
+
+        for (DataSeriesItem dataSeriesItem : itemTimelines) {
+            System.err.println(dataSeriesItem.getName());
+        }
 
         final var series = new DataSeries(itemTimelines);
 
@@ -69,14 +81,15 @@ public class VersionsTimelineChart extends Chart {
         options.getMarker().setSymbol(MarkerSymbolEnum.CIRCLE);
         final DataLabels labels = options.getDataLabels();
         labels.setAllowOverlap(false);
-        labels.setFormat("<span style=\"color:{point.color}\">● </span><span style=\"font-weight: bold;\" > {point.x:%d %b %Y}</span><br/>{point.label}");
+        labels.setFormat(
+                "<span style=\"color:{point.color}\">● </span><span style=\"font-weight: bold;\" > {point.name}</span><br/>{point.x:%d %b %Y}");
         series.setPlotOptions(options);
 
         return series;
     }
 
     public void updateChart(final MajorVersionInfo majorVersionInfo) {
-        this.getConfiguration().setTitle("Timeline of releases in this version - " + majorVersionInfo.getMajorVersion());
+        this.getConfiguration().setTitle("Timeline of releases in version " + majorVersionInfo.getMajorVersion());
         final DataSeries series = this.prepareChartData(majorVersionInfo);
         this.getConfiguration().setSeries(series);
         this.drawChart(true);

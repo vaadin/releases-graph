@@ -8,9 +8,13 @@ public class MajorVersionInfo {
     private String majorVersion;
     private OffsetDateTime firstRelease;
     private OffsetDateTime lastRelease;
+    private OffsetDateTime lastPreRelease;
+
+    private int numberOfPreReleases;
     private int numberOfReleases;
 
     private List<VersionDetails> allVersions;
+    private List<VersionDetails> preVersions;
 
     public String getMajorVersion() {
         return this.majorVersion;
@@ -22,6 +26,10 @@ public class MajorVersionInfo {
 
     public OffsetDateTime getLastRelease() {
         return this.lastRelease;
+    }
+
+    public OffsetDateTime getLastPreRelease() {
+        return this.lastPreRelease;
     }
 
     public void setMajorVersion(final String majorVersion) {
@@ -36,6 +44,10 @@ public class MajorVersionInfo {
         this.lastRelease = lastRelease;
     }
 
+    public void setLastPreRelease(final OffsetDateTime lastPreRelease) {
+        this.lastPreRelease = lastPreRelease;
+    }
+
     public int getNumberOfReleases() {
         return this.numberOfReleases;
     }
@@ -44,12 +56,28 @@ public class MajorVersionInfo {
         this.numberOfReleases = numberOfReleases;
     }
 
+    public int getNumberOfPreReleases() {
+        return this.numberOfPreReleases;
+    }
+
+    public void setNumberOfPreReleases(final int numberOfPreReleases) {
+        this.numberOfPreReleases = numberOfPreReleases;
+    }
+
     public List<VersionDetails> getAllVersions() {
         return this.allVersions;
     }
 
     public void setAllVersions(final List<VersionDetails> allVersions) {
         this.allVersions = allVersions;
+    }
+
+    public List<VersionDetails> getPreVersions() {
+        return this.preVersions;
+    }
+
+    public void setPreVersions(final List<VersionDetails> preVersions) {
+        this.preVersions = preVersions;
     }
 
     @Override
