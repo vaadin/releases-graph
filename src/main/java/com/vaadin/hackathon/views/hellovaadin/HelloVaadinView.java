@@ -56,7 +56,6 @@ public class HelloVaadinView extends VerticalLayout {
         this.chartArea.setWidthFull();
 
         final MajorVersionInfo majorVersionInfo = this.consolidatedVersionsInfo.get(consolidatedVersionsInfo.size() -1);
-        System.err.println(majorVersionInfo.getAllVersions());
         this.versionsTimelineChart = new VersionsTimelineChart(this.gitHubService, majorVersionInfo);
 
         final var radioGroup = new RadioButtonGroup<ChartChoice>();

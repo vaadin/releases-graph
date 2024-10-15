@@ -71,10 +71,6 @@ public class VersionsTimelineChart extends Chart {
                                                   .map(DataSeriesItem.class::cast)
                                                   .toList();
 
-        for (DataSeriesItem dataSeriesItem : itemTimelines) {
-            System.err.println(dataSeriesItem.getName());
-        }
-
         final var series = new DataSeries(itemTimelines);
 
         final PlotOptionsTimeline options = new PlotOptionsTimeline();
