@@ -17,7 +17,6 @@ import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.component.spreadsheet.Spreadsheet;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.router.RouteAlias;
 import com.vaadin.flow.server.StreamRegistration;
 import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.server.VaadinSession;
@@ -29,7 +28,7 @@ import com.vaadin.hackathon.views.MainLayout;
 
 @PageTitle("Platform Releases")
 @Route(value = "", layout = MainLayout.class)
-public class HelloVaadinView extends VerticalLayout {
+public class ReleasesView extends VerticalLayout {
     private final GitService gitService;
     private final GitHubService gitHubService;
 
@@ -40,7 +39,7 @@ public class HelloVaadinView extends VerticalLayout {
     private VersionsTimelineChart versionsTimelineChart;
     private HorizontalLayout chartArea;
 
-    public HelloVaadinView(final GitService gitService, final GitHubService gitHubService) throws IOException {
+    public ReleasesView(final GitService gitService, final GitHubService gitHubService) throws IOException {
         this.gitService = gitService;
         this.gitHubService = gitHubService;
 
@@ -55,7 +54,8 @@ public class HelloVaadinView extends VerticalLayout {
         this.chartArea.setHeightFull();
         this.chartArea.setWidthFull();
 
-        final MajorVersionInfo majorVersionInfo = this.consolidatedVersionsInfo.get(consolidatedVersionsInfo.size() -1);
+        final MajorVersionInfo majorVersionInfo = this.consolidatedVersionsInfo
+                .get(consolidatedVersionsInfo.size() - 1);
         this.versionsTimelineChart = new VersionsTimelineChart(this.gitHubService, majorVersionInfo);
 
         final var radioGroup = new RadioButtonGroup<ChartChoice>();
@@ -64,9 +64,9 @@ public class HelloVaadinView extends VerticalLayout {
         radioGroup.addValueChangeListener(event -> {
             this.chartArea.removeAll();
             final var chart = switch (event.getValue()) {
-                case BY_RELEASE_COUNT -> this.chartByReleaseCount(false);
                 case BY_PRE_RELEASE_COUNT -> this.chartByReleaseCount(true);
                 case BY_RELEASE_TIME_SPAN -> this.chartByTimeSpan(false);
+                case BY_RELEASE_COUNT -> this.chartByReleaseCount(false);
                 case BY_PRE_RELEASE_TIME_SPAN -> this.chartByTimeSpan(true);
             };
             this.chartArea.add(chart);
@@ -85,8 +85,9 @@ public class HelloVaadinView extends VerticalLayout {
     private Button exportButton() {
         return new Button("Export Raw Data", event -> {
             final StreamResource resource = new StreamResource("vaadin_versions.xlsx",
-                                                               () -> new ByteArrayInputStream(this.prepareSpreadsheet().toByteArray()));
-            final StreamRegistration registration = VaadinSession.getCurrent().getResourceRegistry().registerResource(resource);
+                    () -> new ByteArrayInputStream(this.prepareSpreadsheet().toByteArray()));
+            final StreamRegistration registration = VaadinSession.getCurrent().getResourceRegistry()
+                    .registerResource(resource);
             UI.getCurrent().getPage().open(registration.getResourceUri().toString());
         });
     }
@@ -127,12 +128,13 @@ public class HelloVaadinView extends VerticalLayout {
         spreadsheet.createCell(rowCount.getAndIncrement(), releasedOnColumn, "Released On");
 
         this.consolidatedVersionsInfo.stream()
-                                     .map(MajorVersionInfo::getAllVersions)
-                                     .flatMap(List::stream)
-                                     .forEach(item -> {
-                                         spreadsheet.createCell(rowCount.get(), versionColumn, item.getVersion());
-                                         spreadsheet.createCell(rowCount.getAndIncrement(), releasedOnColumn, item.getReleasedOn().toLocalDateTime());
-                                     });
+                .map(MajorVersionInfo::getAllVersions)
+                .flatMap(List::stream)
+                .forEach(item -> {
+                    spreadsheet.createCell(rowCount.get(), versionColumn, item.getVersion());
+                    spreadsheet.createCell(rowCount.getAndIncrement(), releasedOnColumn,
+                            item.getReleasedOn().toLocalDateTime());
+                });
         spreadsheet.autofitColumn(versionColumn);
         spreadsheet.autofitColumn(releasedOnColumn);
         spreadsheet.setSheetName(spreadsheet.getActiveSheetIndex(), "Vaadin Versions");

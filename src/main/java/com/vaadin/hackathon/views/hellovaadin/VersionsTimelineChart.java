@@ -1,6 +1,10 @@
 package com.vaadin.hackathon.views.hellovaadin;
 
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.time.Period;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 
 import org.commonmark.node.Node;
 import org.commonmark.parser.Parser;
@@ -25,6 +29,7 @@ public class VersionsTimelineChart extends Chart {
 
     private final GitHubService gitHubService;
     private boolean isPre;
+    private String interval;
 
     public VersionsTimelineChart(final GitHubService gitHubService, final MajorVersionInfo majorVersionInfo) {
         this.gitHubService = gitHubService;
@@ -46,7 +51,7 @@ public class VersionsTimelineChart extends Chart {
             final String htmlReleaseNotes = "<div>" + renderer.render(document) + "</div>";
 
             final Dialog dialog = new Dialog();
-            dialog.setHeaderTitle("Release Notes for " + versionName);
+            dialog.setHeaderTitle("Release Notes for " + versionName + interval);
             dialog.add(new Html(htmlReleaseNotes));
             dialog.open();
         });
@@ -64,7 +69,7 @@ public class VersionsTimelineChart extends Chart {
         final var itemTimelines = majorVersionInfo.getAllVersions()
                                                   .stream()
                                                   .filter(item -> {
-                                                      return isPre ? item.getVersion().matches(".*(alpha|beta|rc).*") : true;
+                                                      return isPre ? item.getVersion().matches(".*(\\.0|(alpha|beta|rc)\\d+)") : true;
                                                   })
                                                   .map(item -> new DataSeriesItemTimeline(Long.valueOf(item.getReleasedOn().toInstant().toEpochMilli()), item.getVersion(), "",
                                                                                           item.getReleasedOn().format(DateTimeFormatter.RFC_1123_DATE_TIME)))
@@ -85,7 +90,22 @@ public class VersionsTimelineChart extends Chart {
     }
 
     public void updateChart(final MajorVersionInfo majorVersionInfo) {
-        this.getConfiguration().setTitle("Timeline of releases in version " + majorVersionInfo.getMajorVersion());
+        LocalDate first = majorVersionInfo.getFirstRelease().toLocalDate();
+        LocalDate last = (isPre? majorVersionInfo.getLastPreRelease():majorVersionInfo.getLastRelease()).toLocalDate();
+        Period period = Period.between(first, last);
+        
+        int months = period.getYears() * 12 + period.getMonths(); // Convert years and months to total months
+        int remainingDays = period.getDays(); // Remaining days beyond complete months
+        interval = "";
+        if (months > 0) {
+            interval += " (" + months + " months " + (remainingDays > 0 ? "and " : ")");
+        }
+        if (remainingDays > 0) {
+            interval += (months > 0 ? "" : " (") + remainingDays + " days)";
+        }
+        
+        this.getConfiguration().setTitle("Timeline of releases in version " + majorVersionInfo.getMajorVersion() + interval);
+        
         final DataSeries series = this.prepareChartData(majorVersionInfo);
         this.getConfiguration().setSeries(series);
         this.drawChart(true);

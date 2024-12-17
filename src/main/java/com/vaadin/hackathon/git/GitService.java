@@ -131,7 +131,7 @@ public class GitService {
             final List<VersionDetails> details = entry.getValue();
             details.sort(Comparator.comparing(VersionDetails::getReleasedOn));
             final List<VersionDetails> preVersions = details.stream().filter(r -> {
-                return r.getVersion().matches(".*(alpha|beta|rc).*");
+                return r.getVersion().matches(".*(\\.0|(alpha|beta|rc)\\d+)");
             }).toList();
 
             versionInfo.setFirstRelease(details.get(0).getReleasedOn());
@@ -166,7 +166,7 @@ public class GitService {
         try (final var walk = new RevWalk(repository)) {
             final var tags = repository.getRefDatabase().getRefsByPrefix(Constants.R_TAGS);
             tags.forEach(ref -> {
-                final var tagName = "v" + ref.getName().replace("refs/tags/", "");
+                final var tagName = " " + ref.getName().replace("refs/tags/", "");
                 try {
                     final var committerIdent = walk.parseCommit(ref.getObjectId()).getCommitterIdent();
                     final var instant = Instant.ofEpochMilli(committerIdent.getWhen().getTime());

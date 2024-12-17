@@ -1,5 +1,6 @@
 package com.vaadin.hackathon.views.hellovaadin;
 
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.Period;
 import java.time.temporal.ChronoUnit;
@@ -50,23 +51,31 @@ public class VersionsXRangeChart extends Chart {
     private DataSeries prepareChartData() {
         final String labelFormat = "%s";
         final var itemTimelines = this.consolidatedVersionsInfo.stream()
-                                                               .map(item -> {
-                                                                   final Long startTime = item.getFirstRelease().toInstant().toEpochMilli();
-                                                                   OffsetDateTime last = isPre? item.getLastPreRelease() : item.getLastRelease();
-                                                                   final Long endTime = last.toInstant().toEpochMilli();
-                                                                   final var seriesItem = new DataSeriesItemXrange(startTime, endTime, this.consolidatedVersionsInfo.indexOf(item));
+                .map(item -> {
+                    final Long startTime = item.getFirstRelease().toInstant().toEpochMilli();
+                    OffsetDateTime last = isPre ? item.getLastPreRelease() : item.getLastRelease();
+                    final Long endTime = last.toInstant().toEpochMilli();
+                    final var seriesItem = new DataSeriesItemXrange(startTime, endTime,
+                            this.consolidatedVersionsInfo.indexOf(item));
 
-                                                                   final Period period = Period.between(item.getFirstRelease().toLocalDate(), last.toLocalDate());
-                                                                   final var label = labelFormat.formatted(item.getMajorVersion(), period.getYears(), period.getMonths(), period.getDays());
-                                                                   seriesItem.setName(label);
+                    LocalDate startDate = item.getFirstRelease().toLocalDate();
+                    LocalDate endDate = last.toLocalDate();
 
-                                                                   return seriesItem;
-                                                               })
-                                                               .map(DataSeriesItem.class::cast)
-                                                               .toList();
+                    final Period period = Period.between(startDate, endDate);
+                    long between = ChronoUnit.DAYS.between(startDate, endDate);
+
+                    final var label = labelFormat.formatted(item.getMajorVersion(), between, period.getYears(),
+                            period.getMonths(), period.getDays());
+
+                    seriesItem.setName(label);
+                    return seriesItem;
+
+                })
+                .map(DataSeriesItem.class::cast)
+                .toList();
 
         final var series = new DataSeries(itemTimelines);
-        series.setName("Vaadin version's timespan");
+        series.setName("Vaadin version");
 
         final PlotOptionsXrange options = new PlotOptionsXrange();
         options.setBorderColor(SolidColor.GRAY);
