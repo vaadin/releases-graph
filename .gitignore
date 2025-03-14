@@ -20,4 +20,5 @@ drivers/
 error-screenshots/
 webpack.generated.js
 **/password.properties
-src/main/dev-bundle/
+src/main/bundles
+src/main/frontend/generated/
