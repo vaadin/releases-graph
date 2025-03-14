@@ -35,12 +35,9 @@ public class GitService {
         public int compare(String version1, String version2) {
             String[] parts1 = version1.substring(1).split("[\\.-]"); // Remove 'v' and split on '.'
             String[] parts2 = version2.substring(1).split("[\\.-]");
-            System.err.println(version1 + " " + version2);
 
             int length = Math.min(parts1.length, parts2.length);
             for (int i = 0; i < length; i++) {
-                System.err.println(
-                        length + " " + i + " " + parts1.length + " " + parts2.length + " " + parts1 + " " + parts2);
                 int num1 = i < parts1.length ? Integer.parseInt(parts1[i]) : 0;
                 int num2 = i < parts2.length ? Integer.parseInt(parts2[i]) : 0;
 
@@ -199,7 +196,6 @@ public class GitService {
 
         while (true) {
             String url = String.format("%s/tags?page=%d&per_page=%d", BASE_URL, page, perPage);
-            System.err.println(url);
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(url))
                     .header("Authorization", "token " + TOKEN)
@@ -209,7 +205,6 @@ public class GitService {
 
             try {
                 HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-                System.err.println("response ");
                 JsonNode tags = objectMapper.readTree(response.body());
 
                 if (!tags.isArray() || tags.isEmpty()) {
@@ -231,7 +226,6 @@ public class GitService {
                 e.printStackTrace();
                 return null;
             }
-            System.err.println("OK");
         }
 
         return tagMap;
