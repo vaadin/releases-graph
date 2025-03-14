@@ -33,11 +33,14 @@ public class GitService {
     class VersionComparator implements Comparator<String> {
         @Override
         public int compare(String version1, String version2) {
-            String[] parts1 = version1.substring(1).split("\\."); // Remove 'v' and split on '.'
-            String[] parts2 = version2.substring(1).split("\\.");
+            String[] parts1 = version1.substring(1).split("[\\.-]"); // Remove 'v' and split on '.'
+            String[] parts2 = version2.substring(1).split("[\\.-]");
+            System.err.println(version1 + " " + version2);
 
-            int length = Math.max(parts1.length, parts2.length);
+            int length = Math.min(parts1.length, parts2.length);
             for (int i = 0; i < length; i++) {
+                System.err.println(
+                        length + " " + i + " " + parts1.length + " " + parts2.length + " " + parts1 + " " + parts2);
                 int num1 = i < parts1.length ? Integer.parseInt(parts1[i]) : 0;
                 int num2 = i < parts2.length ? Integer.parseInt(parts2[i]) : 0;
 
@@ -63,10 +66,11 @@ public class GitService {
         }
 
         private int compareVersions(String version1, String version2) {
-            String[] parts1 = version1.split("\\.");
-            String[] parts2 = version2.split("\\.");
 
-            int maxLength = Math.max(parts1.length, parts2.length);
+            String[] parts1 = version1.split("[\\.-]");
+            String[] parts2 = version2.split("[\\.-]");
+
+            int maxLength = Math.min(parts1.length, parts2.length);
             for (int i = 0; i < maxLength; i++) {
                 String part1 = i < parts1.length ? parts1[i].replaceAll("[^\\d]", "") : "0";
                 String part2 = i < parts2.length ? parts2[i].replaceAll("[^\\d]", "") : "0";
@@ -93,7 +97,7 @@ public class GitService {
         }
 
         private int comparePreRelease(String pre1, String pre2) {
-            String[] order = {"alpha", "beta", "rc", ""};  // "" represents stable
+            String[] order = { "SNAPSHOT", "alpha", "beta", "rc", "" }; // "" represents stable
 
             int index1 = getPreReleaseIndex(pre1, order);
             int index2 = getPreReleaseIndex(pre2, order);
@@ -119,7 +123,7 @@ public class GitService {
         final var versionDetails = this.fetchVersionDetails();
 
         for (final var item : versionDetails) {
-            var tmp = item.getVersion().split("\\.");
+            var tmp = item.getVersion().split("[\\.-]");
             final var major = tmp[0] + "." + tmp[1];
             versionMap.computeIfAbsent(major, key -> new ArrayList<>()).add(item);
         }
@@ -131,7 +135,7 @@ public class GitService {
             final List<VersionDetails> details = entry.getValue();
             details.sort(Comparator.comparing(VersionDetails::getReleasedOn));
             final List<VersionDetails> preVersions = details.stream().filter(r -> {
-                return r.getVersion().matches(".*(\\.0|(alpha|beta|rc)\\d+)");
+                return r.getVersion().matches(".*(\\.0|(SNAPSHOT|alpha|beta|rc)\\d+)");
             }).toList();
 
             versionInfo.setFirstRelease(details.get(0).getReleasedOn());
