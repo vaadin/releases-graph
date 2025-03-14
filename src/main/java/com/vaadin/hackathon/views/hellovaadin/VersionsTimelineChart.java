@@ -1,10 +1,8 @@
 package com.vaadin.hackathon.views.hellovaadin;
 
 import java.time.LocalDate;
-import java.time.OffsetDateTime;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 
 import org.commonmark.node.Node;
 import org.commonmark.parser.Parser;
@@ -69,7 +67,7 @@ public class VersionsTimelineChart extends Chart {
         final var itemTimelines = majorVersionInfo.getAllVersions()
                                                   .stream()
                                                   .filter(item -> {
-                                                      return isPre ? item.getVersion().matches(".*(\\.0|(alpha|beta|rc)\\d+)") : true;
+                    return isPre ? item.getVersion().matches(".*(\\.0|(SNAPSHOT|alpha|beta|rc)\\d*)") : true;
                                                   })
                                                   .map(item -> new DataSeriesItemTimeline(Long.valueOf(item.getReleasedOn().toInstant().toEpochMilli()), item.getVersion(), "",
                                                                                           item.getReleasedOn().format(DateTimeFormatter.RFC_1123_DATE_TIME)))

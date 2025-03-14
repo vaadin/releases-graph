@@ -40,6 +40,71 @@ public class VersionsXRangeChart extends Chart {
 
         configuration.addSeries(this.prepareChartData());
 
+        configuration.getTooltip().setFormatter(
+                """
+                            function() {
+                             const days = (Math.abs(this.x2-this.x)/(24 * 60 * 60 * 1000)).toFixed(0);
+                             const date1 = new Date(this.x);
+                             const date2 = new Date(this.x2);
+
+                             const year1 = date1.getFullYear();
+                             const month1 = String(date1.getMonth() + 1).padStart(2, '0');
+                             const day1 = String(date1.getDate()).padStart(2, '0');
+
+                             const year2 = date2.getFullYear();
+                             const month2 = String(date2.getMonth() + 1).padStart(2, '0');
+                             const day2 = String(date2.getDate()).padStart(2, '0');
+
+                             const f1 = new Intl.DateTimeFormat("en-US", {
+                                day: "2-digit",
+                                month: "short",
+                                year: "numeric"
+                            }).format(date1);
+                             const f2 = new Intl.DateTimeFormat("en-US", {
+                                day: "2-digit",
+                                month: "short",
+                                year: "numeric"
+                            }).format(date2);
+
+                            function calculateDuration(startDate, endDate) {
+                                // Ensure startDate is earlier than endDate
+                                if (startDate > endDate) {
+                                    [startDate, endDate] = [endDate, startDate];
+                                }
+
+                                // Extract the initial difference in years, months, and days
+                                let years = endDate.getFullYear() - startDate.getFullYear();
+                                let months = endDate.getMonth() - startDate.getMonth();
+                                let days = endDate.getDate() - startDate.getDate();
+
+                                // Adjust for negative days
+                                if (days < 0) {
+                                    months -= 1; // Borrow a month
+                                    // Get the number of days in the previous month
+                                    const previousMonth = new Date(
+                                        endDate.getFullYear(),
+                                        endDate.getMonth(),
+                                        0
+                                    ).getDate();
+                                    days += previousMonth;
+                                }
+
+                                // Adjust for negative months
+                                if (months < 0) {
+                                    years -= 1; // Borrow a year
+                                    months += 12;
+                                }
+
+                                let ret = "";
+                                if (months) ret += months + " months, ";
+                                if (years)  ret += years + " years, ";
+                                return ret + days + " days";
+                             }
+
+                             const duration = calculateDuration(date1, date2);
+                             const version = this.key;
+                             return `<span><b>Version:${version}.0</b></span><br/><span>${f1} - ${f2}</span><br/><span>${duration}</span><br/>`; }
+                        """);
         this.setHeightFull();
         this.setWidthFull();
     }

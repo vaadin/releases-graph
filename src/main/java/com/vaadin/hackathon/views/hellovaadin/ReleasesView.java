@@ -145,6 +145,7 @@ public class ReleasesView extends VerticalLayout {
         versionsTimelineChart.setPre(isPre);
         final var barChart = new VersionsBarChart(this.consolidatedVersionsInfo, isPre);
         barChart.addPointClickListener(this::updateTimelineChart);
+        this.versionsTimelineChart.setVisible(true);
         return barChart;
     }
 
@@ -152,6 +153,7 @@ public class ReleasesView extends VerticalLayout {
         versionsTimelineChart.setPre(isPre);
         final var xRangeChart = new VersionsXRangeChart(this.consolidatedVersionsInfo, isPre);
         xRangeChart.addPointClickListener(this::updateTimelineChart);
+        this.versionsTimelineChart.setVisible(false);
         return xRangeChart;
     }
 
