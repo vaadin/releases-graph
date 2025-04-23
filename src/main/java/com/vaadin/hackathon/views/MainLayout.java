@@ -5,11 +5,9 @@ import java.util.Objects;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasElement;
 import com.vaadin.flow.component.html.H2;
-import com.vaadin.flow.component.html.Hr;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.RouterLayout;
-import com.vaadin.flow.theme.lumo.LumoUtility;
 
 /**
  * The main view is a top-level placeholder for other views.
@@ -24,8 +22,7 @@ public class MainLayout extends VerticalLayout implements RouterLayout {
         this.setWidthFull();
 
         this.viewTitle = new H2();
-        this.viewTitle.addClassNames(LumoUtility.FontSize.LARGE, LumoUtility.Margin.NONE);
-        this.add(this.viewTitle, new Hr());
+        this.add(this.viewTitle);
     }
 
     @Override

@@ -97,8 +97,8 @@ public class ReleasesView extends VerticalLayout {
             final Dialog dialog = new Dialog();
             dialog.setHeaderTitle("Vaadin all released version details");
             dialog.add(this.createSpreadsheet());
-            dialog.setWidth("400px");
-            dialog.setHeight("600px");
+            dialog.setWidth("80%");
+            dialog.setHeight("80%");
             dialog.open();
         });
     }
@@ -135,8 +135,8 @@ public class ReleasesView extends VerticalLayout {
                     spreadsheet.createCell(rowCount.getAndIncrement(), releasedOnColumn,
                             item.getReleasedOn().toLocalDateTime());
                 });
-        spreadsheet.autofitColumn(versionColumn);
-        spreadsheet.autofitColumn(releasedOnColumn);
+        spreadsheet.setColumnWidth(0, 150);
+        spreadsheet.setColumnWidth(1, 200);
         spreadsheet.setSheetName(spreadsheet.getActiveSheetIndex(), "Vaadin Versions");
         return spreadsheet;
     }
