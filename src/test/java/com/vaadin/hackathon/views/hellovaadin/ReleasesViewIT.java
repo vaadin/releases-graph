@@ -1,5 +1,6 @@
 package com.vaadin.hackathon.views.hellovaadin;
 
+import java.lang.management.ManagementFactory;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -25,14 +26,18 @@ public class ReleasesViewIT {
 
   @BeforeEach
   public void setup() {
-    LaunchOptions ops = new BrowserType.LaunchOptions().setHeadless(!Boolean.getBoolean("headed"));
+    Boolean headed = ManagementFactory.getRuntimeMXBean()
+            .getInputArguments()
+            .toString()
+            .contains("-agentlib:jdwp") || Boolean.getBoolean("headed");
+    LaunchOptions ops = new BrowserType.LaunchOptions().setHeadless(!headed);
     page = Playwright.create().chromium().launch(ops).newContext().newPage();
     page.setDefaultTimeout(30000);
     page.navigate("http://localhost:8080/");
   }
+
   @AfterEach
   public void tearDown() {
-      page.close();
       page.context().browser().close();
   }
   
