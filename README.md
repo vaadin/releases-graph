@@ -19,6 +19,14 @@ There is also a provision to view the data in a spreadsheet within a dialog as w
 ##### View the raw data in embedded spreadsheet or export the file.
 ![View the raw data in embedded spreadsheet or export the file](assets/raw_data_view_export.png)
 
+## Requisites
+
+You need these environment variables in order to run the app:
+
+  - `GITHUB_TOKEN` for accessing GitHub GraphQL usage
+  - `CACHEFOLDER` (optional) for placing the cache file, otherwise it uses system tmp
+
+
 ## Running the application
 
 The project is a standard Maven project. To run it from the command line,
