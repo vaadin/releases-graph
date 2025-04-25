@@ -1,4 +1,4 @@
-package com.vaadin.hackathon.views.hellovaadin;
+package com.vaadin.platform.views.releases;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
@@ -16,7 +16,7 @@ import com.vaadin.flow.component.charts.model.DataSeriesItem;
 import com.vaadin.flow.component.charts.model.DataSeriesItemXrange;
 import com.vaadin.flow.component.charts.model.PlotOptionsXrange;
 import com.vaadin.flow.component.charts.model.style.SolidColor;
-import com.vaadin.hackathon.git.MajorVersionInfo;
+import com.vaadin.platform.git.MajorVersionInfo;
 
 public class VersionsXRangeChart extends Chart {
 

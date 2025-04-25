@@ -1,4 +1,4 @@
-package com.vaadin.hackathon.views;
+package com.vaadin.platform.views;
 
 import java.util.Objects;
 

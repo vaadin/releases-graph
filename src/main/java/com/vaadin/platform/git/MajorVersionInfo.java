@@ -1,4 +1,4 @@
-package com.vaadin.hackathon.git;
+package com.vaadin.platform.git;
 
 import java.time.OffsetDateTime;
 import java.util.List;

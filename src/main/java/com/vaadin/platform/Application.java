@@ -1,4 +1,4 @@
-package com.vaadin.hackathon;
+package com.vaadin.platform;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

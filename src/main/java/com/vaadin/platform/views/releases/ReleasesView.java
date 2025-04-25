@@ -1,4 +1,4 @@
-package com.vaadin.hackathon.views.hellovaadin;
+package com.vaadin.platform.views.releases;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -21,10 +21,10 @@ import com.vaadin.flow.server.StreamRegistration;
 import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.theme.lumo.LumoUtility;
-import com.vaadin.hackathon.git.GitHubService;
-import com.vaadin.hackathon.git.GitService;
-import com.vaadin.hackathon.git.MajorVersionInfo;
-import com.vaadin.hackathon.views.MainLayout;
+import com.vaadin.platform.git.GitHubService;
+import com.vaadin.platform.git.GitService;
+import com.vaadin.platform.git.MajorVersionInfo;
+import com.vaadin.platform.views.MainLayout;
 
 @PageTitle("Platform Releases")
 @Route(value = "", layout = MainLayout.class)

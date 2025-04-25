@@ -1,4 +1,4 @@
-package com.vaadin.hackathon.views.hellovaadin;
+package com.vaadin.platform.views.releases;
 
 import java.time.LocalDate;
 import java.time.Period;
@@ -20,8 +20,8 @@ import com.vaadin.flow.component.charts.model.DataSeriesItemTimeline;
 import com.vaadin.flow.component.charts.model.MarkerSymbolEnum;
 import com.vaadin.flow.component.charts.model.PlotOptionsTimeline;
 import com.vaadin.flow.component.dialog.Dialog;
-import com.vaadin.hackathon.git.GitHubService;
-import com.vaadin.hackathon.git.MajorVersionInfo;
+import com.vaadin.platform.git.GitHubService;
+import com.vaadin.platform.git.MajorVersionInfo;
 
 public class VersionsTimelineChart extends Chart {
 

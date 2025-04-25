@@ -1,4 +1,4 @@
-package com.vaadin.hackathon.views.hellovaadin;
+package com.vaadin.platform.views.releases;
 
 import java.util.List;
 
@@ -9,7 +9,7 @@ import com.vaadin.flow.component.charts.model.Configuration;
 import com.vaadin.flow.component.charts.model.DataProviderSeries;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.function.SerializableFunction;
-import com.vaadin.hackathon.git.MajorVersionInfo;
+import com.vaadin.platform.git.MajorVersionInfo;
 
 public class VersionsBarChart extends Chart {
 

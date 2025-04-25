@@ -1,4 +1,4 @@
-package com.vaadin.hackathon.git;
+package com.vaadin.platform.git;
 
 import java.io.IOException;
 import java.net.URI;
