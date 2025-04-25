@@ -98,7 +98,9 @@ public class MajorVersionInfo {
 
     @Override
     public String toString() {
-        return "VersionInfo [majorVersion=" + this.majorVersion + ", firstRelease=" + this.firstRelease + ", lastRelease=" + this.lastRelease + "]";
+        return "VersionInfo [majorVersion=" + this.majorVersion
+                + ", firstRelease=" + this.firstRelease + ", lastRelease="
+                + this.lastRelease + "]";
     }
 
 }

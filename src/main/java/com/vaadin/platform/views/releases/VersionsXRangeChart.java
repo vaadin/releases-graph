@@ -23,13 +23,16 @@ public class VersionsXRangeChart extends Chart {
     private final List<MajorVersionInfo> consolidatedVersionsInfo;
     private boolean isPre;
 
-    public VersionsXRangeChart(final List<MajorVersionInfo> consolidatedVersionsInfo, boolean isPre) {
+    public VersionsXRangeChart(
+            final List<MajorVersionInfo> consolidatedVersionsInfo,
+            boolean isPre) {
         this.consolidatedVersionsInfo = consolidatedVersionsInfo;
         this.isPre = isPre;
 
         final Configuration configuration = this.getConfiguration();
         configuration.getChart().setType(ChartType.XRANGE);
-        configuration.setTitle("Vaadin versions by time span " + (isPre ? "(Pre-releases)" : "(Releases)"));
+        configuration.setTitle("Vaadin versions by time span "
+                + (isPre ? "(Pre-releases)" : "(Releases)"));
         configuration.getTooltip().setEnabled(true);
         configuration.getTooltip().setXDateFormat("%e.%b.%Y ");
 
@@ -110,17 +113,21 @@ public class VersionsXRangeChart extends Chart {
     }
 
     private String[] categories() {
-        return this.consolidatedVersionsInfo.stream().map(MajorVersionInfo::getMajorVersion).toArray(String[]::new);
+        return this.consolidatedVersionsInfo.stream()
+                .map(MajorVersionInfo::getMajorVersion).toArray(String[]::new);
     }
 
     private DataSeries prepareChartData() {
         final String labelFormat = "%s";
         final var itemTimelines = this.consolidatedVersionsInfo.stream()
                 .map(item -> {
-                    final Long startTime = item.getFirstRelease().toInstant().toEpochMilli();
-                    OffsetDateTime last = isPre ? item.getLastPreRelease() : item.getLastRelease();
+                    final Long startTime = item.getFirstRelease().toInstant()
+                            .toEpochMilli();
+                    OffsetDateTime last = isPre ? item.getLastPreRelease()
+                            : item.getLastRelease();
                     final Long endTime = last.toInstant().toEpochMilli();
-                    final var seriesItem = new DataSeriesItemXrange(startTime, endTime,
+                    final var seriesItem = new DataSeriesItemXrange(startTime,
+                            endTime,
                             this.consolidatedVersionsInfo.indexOf(item));
 
                     LocalDate startDate = item.getFirstRelease().toLocalDate();
@@ -129,15 +136,14 @@ public class VersionsXRangeChart extends Chart {
                     final Period period = Period.between(startDate, endDate);
                     long between = ChronoUnit.DAYS.between(startDate, endDate);
 
-                    final var label = labelFormat.formatted(item.getMajorVersion(), between, period.getYears(),
+                    final var label = labelFormat.formatted(
+                            item.getMajorVersion(), between, period.getYears(),
                             period.getMonths(), period.getDays());
 
                     seriesItem.setName(label);
                     return seriesItem;
 
-                })
-                .map(DataSeriesItem.class::cast)
-                .toList();
+                }).map(DataSeriesItem.class::cast).toList();
 
         final var series = new DataSeries(itemTimelines);
         series.setName("Vaadin version");

@@ -16,7 +16,7 @@ public class GitService {
     class VersionComparator implements Comparator<String> {
         @Override
         public int compare(String version1, String version2) {
-            String[] parts1 = version1.split("[\\.-]"); //split on '.'
+            String[] parts1 = version1.split("[\\.-]"); // split on '.'
             String[] parts2 = version2.split("[\\.-]");
 
             int length = Math.min(parts1.length, parts2.length);
@@ -37,7 +37,8 @@ public class GitService {
 
         @Override
         public int compare(VersionDetails v1, VersionDetails v2) {
-            int versionComparison = compareVersions(v1.getVersion(), v2.getVersion());
+            int versionComparison = compareVersions(v1.getVersion(),
+                    v2.getVersion());
             if (versionComparison != 0) {
                 return versionComparison;
             }
@@ -52,8 +53,12 @@ public class GitService {
 
             int maxLength = Math.min(parts1.length, parts2.length);
             for (int i = 0; i < maxLength; i++) {
-                String part1 = i < parts1.length ? parts1[i].replaceAll("[^\\d]", "") : "0";
-                String part2 = i < parts2.length ? parts2[i].replaceAll("[^\\d]", "") : "0";
+                String part1 = i < parts1.length
+                        ? parts1[i].replaceAll("[^\\d]", "")
+                        : "0";
+                String part2 = i < parts2.length
+                        ? parts2[i].replaceAll("[^\\d]", "")
+                        : "0";
 
                 int numPart1 = part1.isEmpty() ? 0 : Integer.parseInt(part1);
                 int numPart2 = part2.isEmpty() ? 0 : Integer.parseInt(part2);
@@ -77,7 +82,9 @@ public class GitService {
         }
 
         private int comparePreRelease(String pre1, String pre2) {
-            String[] order = { "SNAPSHOT", "alpha", "beta", "rc", "" }; // "" represents stable
+            String[] order = { "SNAPSHOT", "alpha", "beta", "rc", "" }; // ""
+                                                                        // represents
+                                                                        // stable
 
             int index1 = getPreReleaseIndex(pre1, order);
             int index2 = getPreReleaseIndex(pre2, order);
@@ -91,7 +98,7 @@ public class GitService {
                     return i;
                 }
             }
-            return order.length;  // For unknown identifiers, place them last
+            return order.length; // For unknown identifiers, place them last
         }
     }
 
@@ -102,31 +109,39 @@ public class GitService {
     @Autowired
     private GitHubTagService gitHubTagService;
 
-    public List<MajorVersionInfo> consolidatedVersionsInfo() throws IOException, InterruptedException {
-        final var versionMap = new TreeMap<String, List<VersionDetails>>(new VersionComparator());
-        final var versionDetails = this.fetchVersionDetails(repoOwner, repoName);
+    public List<MajorVersionInfo> consolidatedVersionsInfo()
+            throws IOException, InterruptedException {
+        final var versionMap = new TreeMap<String, List<VersionDetails>>(
+                new VersionComparator());
+        final var versionDetails = this.fetchVersionDetails(repoOwner,
+                repoName);
 
         for (final var item : versionDetails) {
             var tmp = item.getVersion().split("[\\.-]");
             final var major = tmp[0] + "." + tmp[1];
-            versionMap.computeIfAbsent(major, key -> new ArrayList<>()).add(item);
+            versionMap.computeIfAbsent(major, key -> new ArrayList<>())
+                    .add(item);
         }
 
-        return  versionMap.entrySet().stream().map(entry -> {
+        return versionMap.entrySet().stream().map(entry -> {
             final var versionInfo = new MajorVersionInfo();
             versionInfo.setMajorVersion(entry.getKey());
 
             final List<VersionDetails> details = entry.getValue();
             details.sort(Comparator.comparing(VersionDetails::getReleasedOn));
-            final List<VersionDetails> preVersions = details.stream().filter(r -> {
-                return r.getVersion().matches(".*(\\.0|(SNAPSHOT|alpha|beta|rc)\\d+)");
-            }).toList();
+            final List<VersionDetails> preVersions = details.stream()
+                    .filter(r -> {
+                        return r.getVersion().matches(
+                                ".*(\\.0|(SNAPSHOT|alpha|beta|rc)\\d+)");
+                    }).toList();
 
             versionInfo.setFirstRelease(details.get(0).getReleasedOn());
-            versionInfo.setLastRelease(details.get(details.size() - 1).getReleasedOn());
+            versionInfo.setLastRelease(
+                    details.get(details.size() - 1).getReleasedOn());
 
             int idx = preVersions.size() - 1;
-            VersionDetails last = idx >= 0 ? preVersions.get(idx) : details.get(details.size() - 1);
+            VersionDetails last = idx >= 0 ? preVersions.get(idx)
+                    : details.get(details.size() - 1);
             versionInfo.setLastPreRelease(last.getReleasedOn());
 
             versionInfo.setNumberOfReleases(details.size());
@@ -137,12 +152,13 @@ public class GitService {
         }).toList();
     }
 
-    public List<VersionDetails> fetchVersionDetails(String repoOwner, String repoName ) throws IOException, InterruptedException {
+    public List<VersionDetails> fetchVersionDetails(String repoOwner,
+            String repoName) throws IOException, InterruptedException {
 
-        var versionDetails = this.gitHubTagService.fetchAllTags(repoOwner, repoName);
+        var versionDetails = this.gitHubTagService.fetchAllTags(repoOwner,
+                repoName);
         versionDetails.sort(new VersionDetailsComparator());
         return versionDetails;
     }
-
 
 }

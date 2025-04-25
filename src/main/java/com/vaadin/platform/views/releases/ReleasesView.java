@@ -39,11 +39,14 @@ public class ReleasesView extends VerticalLayout {
     private VersionsTimelineChart versionsTimelineChart;
     private HorizontalLayout chartArea;
 
-    public ReleasesView(final GitService gitService, final GitHubService gitHubService) throws IOException, InterruptedException {
+    public ReleasesView(final GitService gitService,
+            final GitHubService gitHubService)
+            throws IOException, InterruptedException {
         this.gitService = gitService;
         this.gitHubService = gitHubService;
 
-        this.consolidatedVersionsInfo = this.gitService.consolidatedVersionsInfo();
+        this.consolidatedVersionsInfo = this.gitService
+                .consolidatedVersionsInfo();
         this.init();
         this.setHeightFull();
         this.setWidthFull();
@@ -56,7 +59,8 @@ public class ReleasesView extends VerticalLayout {
 
         final MajorVersionInfo majorVersionInfo = this.consolidatedVersionsInfo
                 .get(consolidatedVersionsInfo.size() - 1);
-        this.versionsTimelineChart = new VersionsTimelineChart(this.gitHubService, majorVersionInfo);
+        this.versionsTimelineChart = new VersionsTimelineChart(
+                this.gitHubService, majorVersionInfo);
 
         final var radioGroup = new RadioButtonGroup<ChartChoice>();
         radioGroup.setLabel("Chart Type");
@@ -64,10 +68,10 @@ public class ReleasesView extends VerticalLayout {
         radioGroup.addValueChangeListener(event -> {
             this.chartArea.removeAll();
             final var chart = switch (event.getValue()) {
-                case BY_PRE_RELEASE_COUNT -> this.chartByReleaseCount(true);
-                case BY_RELEASE_TIME_SPAN -> this.chartByTimeSpan(false);
-                case BY_RELEASE_COUNT -> this.chartByReleaseCount(false);
-                case BY_PRE_RELEASE_TIME_SPAN -> this.chartByTimeSpan(true);
+            case BY_PRE_RELEASE_COUNT -> this.chartByReleaseCount(true);
+            case BY_RELEASE_TIME_SPAN -> this.chartByTimeSpan(false);
+            case BY_RELEASE_COUNT -> this.chartByReleaseCount(false);
+            case BY_PRE_RELEASE_TIME_SPAN -> this.chartByTimeSpan(true);
             };
             this.chartArea.add(chart);
         });
@@ -84,11 +88,13 @@ public class ReleasesView extends VerticalLayout {
 
     private Button exportButton() {
         return new Button("Export Raw Data", event -> {
-            final StreamResource resource = new StreamResource("vaadin_versions.xlsx",
-                    () -> new ByteArrayInputStream(this.prepareSpreadsheet().toByteArray()));
-            final StreamRegistration registration = VaadinSession.getCurrent().getResourceRegistry()
-                    .registerResource(resource);
-            UI.getCurrent().getPage().open(registration.getResourceUri().toString());
+            final StreamResource resource = new StreamResource(
+                    "vaadin_versions.xlsx", () -> new ByteArrayInputStream(
+                            this.prepareSpreadsheet().toByteArray()));
+            final StreamRegistration registration = VaadinSession.getCurrent()
+                    .getResourceRegistry().registerResource(resource);
+            UI.getCurrent().getPage()
+                    .open(registration.getResourceUri().toString());
         });
     }
 
@@ -125,25 +131,29 @@ public class ReleasesView extends VerticalLayout {
 
         final AtomicInteger rowCount = new AtomicInteger(0);
         spreadsheet.createCell(rowCount.get(), versionColumn, "Version");
-        spreadsheet.createCell(rowCount.getAndIncrement(), releasedOnColumn, "Released On");
+        spreadsheet.createCell(rowCount.getAndIncrement(), releasedOnColumn,
+                "Released On");
 
         this.consolidatedVersionsInfo.stream()
-                .map(MajorVersionInfo::getAllVersions)
-                .flatMap(List::stream)
+                .map(MajorVersionInfo::getAllVersions).flatMap(List::stream)
                 .forEach(item -> {
-                    spreadsheet.createCell(rowCount.get(), versionColumn, item.getVersion());
-                    spreadsheet.createCell(rowCount.getAndIncrement(), releasedOnColumn,
+                    spreadsheet.createCell(rowCount.get(), versionColumn,
+                            item.getVersion());
+                    spreadsheet.createCell(rowCount.getAndIncrement(),
+                            releasedOnColumn,
                             item.getReleasedOn().toLocalDateTime());
                 });
         spreadsheet.setColumnWidth(0, 150);
         spreadsheet.setColumnWidth(1, 200);
-        spreadsheet.setSheetName(spreadsheet.getActiveSheetIndex(), "Vaadin Versions");
+        spreadsheet.setSheetName(spreadsheet.getActiveSheetIndex(),
+                "Vaadin Versions");
         return spreadsheet;
     }
 
     private VersionsBarChart chartByReleaseCount(boolean isPre) {
         versionsTimelineChart.setPre(isPre);
-        final var barChart = new VersionsBarChart(this.consolidatedVersionsInfo, isPre);
+        final var barChart = new VersionsBarChart(this.consolidatedVersionsInfo,
+                isPre);
         barChart.addPointClickListener(this::updateTimelineChart);
         this.versionsTimelineChart.setVisible(true);
         return barChart;
@@ -151,7 +161,8 @@ public class ReleasesView extends VerticalLayout {
 
     private VersionsXRangeChart chartByTimeSpan(boolean isPre) {
         versionsTimelineChart.setPre(isPre);
-        final var xRangeChart = new VersionsXRangeChart(this.consolidatedVersionsInfo, isPre);
+        final var xRangeChart = new VersionsXRangeChart(
+                this.consolidatedVersionsInfo, isPre);
         xRangeChart.addPointClickListener(this::updateTimelineChart);
         this.versionsTimelineChart.setVisible(false);
         return xRangeChart;
@@ -159,7 +170,8 @@ public class ReleasesView extends VerticalLayout {
 
     private void updateTimelineChart(final PointClickEvent event) {
         final var index = event.getItemIndex();
-        final MajorVersionInfo selectedMajorVersionInfo = this.consolidatedVersionsInfo.get(index);
+        final MajorVersionInfo selectedMajorVersionInfo = this.consolidatedVersionsInfo
+                .get(index);
         this.versionsTimelineChart.updateChart(selectedMajorVersionInfo);
     }
 

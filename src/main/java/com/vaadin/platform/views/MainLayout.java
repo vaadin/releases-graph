@@ -27,7 +27,8 @@ public class MainLayout extends VerticalLayout implements RouterLayout {
 
     @Override
     public void showRouterLayoutContent(final HasElement content) {
-        this.getElement().appendChild(Objects.requireNonNull(content.getElement()));
+        this.getElement()
+                .appendChild(Objects.requireNonNull(content.getElement()));
         this.component = (Component) content;
         this.afterNavigation();
     }
@@ -37,7 +38,8 @@ public class MainLayout extends VerticalLayout implements RouterLayout {
     }
 
     private String getCurrentPageTitle() {
-        final PageTitle title = this.component.getClass().getAnnotation(PageTitle.class);
+        final PageTitle title = this.component.getClass()
+                .getAnnotation(PageTitle.class);
         return title == null ? "" : title.value();
     }
 }

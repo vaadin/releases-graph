@@ -8,14 +8,16 @@ public class VersionDetails {
     private OffsetDateTime releasedOn;
     private String creator;
 
-    public VersionDetails(final String version, final OffsetDateTime releasedOn, final String creator) {
+    public VersionDetails(final String version, final OffsetDateTime releasedOn,
+            final String creator) {
         this.version = version;
         this.releasedOn = releasedOn;
         this.creator = creator;
     }
 
-    //empty constructor for deserialization
-    public VersionDetails(){}
+    // empty constructor for deserialization
+    public VersionDetails() {
+    }
 
     public String getVersion() {
         return this.version;
@@ -25,11 +27,11 @@ public class VersionDetails {
         return this.releasedOn;
     }
 
-    public void setCreator(final String creator){
-        this.creator=creator;
+    public void setCreator(final String creator) {
+        this.creator = creator;
     }
 
-    public String getCreator(){
+    public String getCreator() {
         return this.creator;
     }
 
@@ -59,7 +61,8 @@ public class VersionDetails {
 
     @Override
     public String toString() {
-        return "VersionDetails [version=" + this.version + ", releasedOn=" + this.releasedOn + " by " + this.creator + "]";
+        return "VersionDetails [version=" + this.version + ", releasedOn="
+                + this.releasedOn + " by " + this.creator + "]";
     }
 
 }

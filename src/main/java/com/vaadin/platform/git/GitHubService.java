@@ -18,7 +18,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class GitHubService {
-    private static final Logger LOGGER = LogManager.getLogger(GitHubService.class);
+    private static final Logger LOGGER = LogManager
+            .getLogger(GitHubService.class);
 
     @Value("${github.release.api.url}")
     private String githubReleaseApiUrl;
@@ -35,14 +36,15 @@ public class GitHubService {
 
         try {
             final HttpRequest request = HttpRequest.newBuilder()
-                                                   .header("Accept", "application/vnd.github+json")
-                                                   .header("Authorization", "Bearer " + this.githubPersonalToken)
-                                                   .header("X-GitHub-Api-Version", "2022-11-28")
-                                                   .uri(new URI(url))
-                                                   .build();
+                    .header("Accept", "application/vnd.github+json")
+                    .header("Authorization",
+                            "Bearer " + this.githubPersonalToken)
+                    .header("X-GitHub-Api-Version", "2022-11-28")
+                    .uri(new URI(url)).build();
 
             final HttpClient httpClient = HttpClient.newHttpClient();
-            final HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            final HttpResponse<String> response = httpClient.send(request,
+                    HttpResponse.BodyHandlers.ofString());
             if (response.statusCode() == 200) {
                 final JsonNode parent = OBJECT_MAPPER.readTree(response.body());
                 releaseNotes = parent.path("body").asText();

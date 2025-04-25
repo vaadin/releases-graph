@@ -18,10 +18,13 @@ public class VersionsBarChart extends Chart {
     private String release;
     private SerializableFunction<MajorVersionInfo, Object> callBack;
 
-    public VersionsBarChart(final List<MajorVersionInfo> consolidatedVersionsInfo, boolean isPre) {
+    public VersionsBarChart(
+            final List<MajorVersionInfo> consolidatedVersionsInfo,
+            boolean isPre) {
         this.consolidatedVersionsInfo = consolidatedVersionsInfo;
         release = isPre ? "Pre-releases" : "Releases";
-        callBack = isPre ? MajorVersionInfo::getNumberOfPreReleases : MajorVersionInfo::getNumberOfReleases;
+        callBack = isPre ? MajorVersionInfo::getNumberOfPreReleases
+                : MajorVersionInfo::getNumberOfReleases;
 
         final Configuration configuration = this.getConfiguration();
         configuration.getChart().setType(ChartType.COLUMN);
@@ -36,7 +39,8 @@ public class VersionsBarChart extends Chart {
     }
 
     private DataProviderSeries<MajorVersionInfo> prepareChartData() {
-        final var dataprovider = new ListDataProvider<>(this.consolidatedVersionsInfo);
+        final var dataprovider = new ListDataProvider<>(
+                this.consolidatedVersionsInfo);
         final var series = new DataProviderSeries<>(dataprovider, callBack);
         series.setName(release + " counts");
         series.setX(MajorVersionInfo::getMajorVersion);
