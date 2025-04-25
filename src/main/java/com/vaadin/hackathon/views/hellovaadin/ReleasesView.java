@@ -39,7 +39,7 @@ public class ReleasesView extends VerticalLayout {
     private VersionsTimelineChart versionsTimelineChart;
     private HorizontalLayout chartArea;
 
-    public ReleasesView(final GitService gitService, final GitHubService gitHubService) throws IOException {
+    public ReleasesView(final GitService gitService, final GitHubService gitHubService) throws IOException, InterruptedException {
         this.gitService = gitService;
         this.gitHubService = gitHubService;
 

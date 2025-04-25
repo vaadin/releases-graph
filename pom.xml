@@ -13,7 +13,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.4.4</version>
+        <version>3.4.5</version>
     </parent>
     <repositories>
         <!-- The order of definitions matters. Explicitly defining central here to make sure it has
@@ -114,8 +114,14 @@
         <dependency>
             <groupId>com.microsoft.playwright</groupId>
             <artifactId>playwright</artifactId>
-            <version>LATEST</version>
+            <version>1.51.0</version>
             <scope>test</scope>
+        </dependency>
+        <!-- for serialization of OffsetDateTime-->
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <version>2.18.3</version>
         </dependency>
     </dependencies>
     <build>

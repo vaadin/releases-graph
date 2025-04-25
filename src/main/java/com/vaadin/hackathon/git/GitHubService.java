@@ -31,9 +31,7 @@ public class GitHubService {
     @Cacheable
     public String fetchReleaseNotes(final String versionName) {
         String releaseNotes = "";
-        // remove the v which is always the first character
-        final String tagName = versionName.substring(1);
-        final String url = this.githubReleaseApiUrl.formatted(tagName);
+        final String url = this.githubReleaseApiUrl.formatted(versionName);
 
         try {
             final HttpRequest request = HttpRequest.newBuilder()
