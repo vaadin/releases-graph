@@ -26,8 +26,10 @@ public class ReleasesViewIT {
 
     @BeforeEach
     public void setup() {
-        Boolean headed = ManagementFactory.getRuntimeMXBean().getInputArguments().toString().contains("-agentlib:jdwp")
+        String args = ManagementFactory.getRuntimeMXBean().getInputArguments().toString();
+        Boolean headed = args.matches(".*(-agentlib:jdwp|jdwp:transport).*")
                 || Boolean.getBoolean("headed");
+        // System.err.println("headed: " + headed + " args: " + args);
         LaunchOptions ops = new BrowserType.LaunchOptions().setHeadless(!headed);
         page = Playwright.create().chromium().launch(ops).newContext().newPage();
         page.setDefaultTimeout(30000);
