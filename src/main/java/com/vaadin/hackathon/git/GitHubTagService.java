@@ -33,13 +33,13 @@ public class GitHubTagService {
     private String tagCacheFolder;
     @Value("${github.personal.token}")
     private String githubToken;
-    
-    
+
+
     private Instant lastCachedTime = Instant.now();
 
     private static final Logger LOGGER = LogManager.getLogger(GitHubTagService.class);
     private static final String GITHUB_API_URL = "https://api.github.com/graphql";
- 
+
     private static final HttpClient client = HttpClient.newBuilder()
             .connectTimeout(Duration.ofSeconds(20))
             .build();
@@ -164,18 +164,20 @@ public class GitHubTagService {
 
     private List<VersionDetails> fetchTagsFromCache(String repoOwner, String repoName) {
         try {
-            File cacheFile = new File(tagCacheFolder, 
+            File cacheFile = new File(tagCacheFolder,
                 "github-tags-" + repoOwner + "_" + repoName + ".json");
-            
+
             if (!cacheFile.exists()) {
                 return null;
             }
-            
+
             ObjectMapper mapper = new ObjectMapper();
             mapper.registerModule(new JavaTimeModule());
-            return mapper.readValue(cacheFile, 
+
+            List<VersionDetails> ret = mapper.readValue(cacheFile,
                 mapper.getTypeFactory().constructCollectionType(List.class, VersionDetails.class));
-                
+            LOGGER.info("Using cached data from {}", cacheFile.getAbsolutePath());
+            return ret;
         } catch (IOException e) {
             LOGGER.warn("Problems when trying to read tag cache file. Using life query instead.", e);
             return null;
@@ -184,15 +186,16 @@ public class GitHubTagService {
 
 private void saveToCache(String repoOwner, String repoName, List<VersionDetails> details) {
     try {
-        File cacheFile = new File(tagCacheFolder, 
+        File cacheFile = new File(tagCacheFolder,
             "github-tags-" + repoOwner + "_" + repoName + ".json");
-        
+
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModules(new JavaTimeModule());
         mapper.writeValue(cacheFile, details);
-        
         // Update the last cached time
         lastCachedTime = Instant.now();
+
+        LOGGER.info("Using cached data from {}", cacheFile.getAbsolutePath());
     } catch (IOException e) {
         LOGGER.warn("Failed to write tag cache file", e);
     }
