@@ -5,19 +5,19 @@ There is also a provision to view the data in a spreadsheet within a dialog as w
 
 
 ##### Show all vaadin releases with the number of release in each major version.
-![Show all vaadin releases with the number of release in each major version](by_release_count.png)
+![Show all vaadin releases with the number of release in each major version](assets/by_release_count.png)
 
 ##### Show all vaadin releases by time span indication how long a major version was supported/patched.
-![Show all vaadin releases by time span indication how long a major version was supported/patched](by_time_span.png)
+![Show all vaadin releases by time span indication how long a major version was supported/patched](assets/by_time_span.png)
 
 ##### Click the top chart to see the timelines of the selected version line.
-![Click the top chart to see the timelines of the selected version line](single_version_timeline.png)
+![Click the top chart to see the timelines of the selected version line](assets/single_version_timeline.png)
 
 ##### Click the specific version in the timeline chart below to see the release notes (access via Github API)
-![Click the specific version in the timeline chart below to see the release notes](view_release_notes.png)
+![Click the specific version in the timeline chart below to see the release notes](assets/view_release_notes.png)
 
 ##### View the raw data in embedded spreadsheet or export the file.
-![View the raw data in embedded spreadsheet or export the file](raw_data_view_export.png)
+![View the raw data in embedded spreadsheet or export the file](assets/raw_data_view_export.png)
 
 ## Running the application
 
