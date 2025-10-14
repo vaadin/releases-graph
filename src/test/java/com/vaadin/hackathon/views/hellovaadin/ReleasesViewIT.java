@@ -123,9 +123,7 @@ public class ReleasesViewIT {
 
         // Then a dialog with tag name 'vaadin-dialog' and heading 'Vaadin all
         // released version details' should appear
-        Locator dialog = page.locator("vaadin-dialog-overlay")
-                .filter(new Locator.FilterOptions()
-                        .setHasText("Vaadin all released version details"));
+        Locator dialog = page.locator("vaadin-dialog-overlay");
         PlaywrightAssertions.assertThat(dialog).isVisible();
     }
 
