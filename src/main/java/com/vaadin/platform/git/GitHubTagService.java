@@ -17,10 +17,10 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.node.ObjectNode;
+
 
 @Service
 public class GitHubTagService {
@@ -131,7 +131,7 @@ public class GitHubTagService {
             throws IOException, InterruptedException {
         // Build GraphQL variables
         ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
+
         ObjectNode variables = mapper.createObjectNode().put("owner", owner)
                 .put("name", name).put("pageSize", pageSize);
         if (after != null)
@@ -184,7 +184,7 @@ public class GitHubTagService {
             }
 
             ObjectMapper mapper = new ObjectMapper();
-            mapper.registerModule(new JavaTimeModule());
+
 
             List<VersionDetails> ret = mapper.readValue(cacheFile,
                     mapper.getTypeFactory().constructCollectionType(List.class,
@@ -192,7 +192,7 @@ public class GitHubTagService {
             LOGGER.info("Using cached data from {}",
                     cacheFile.getAbsolutePath());
             return ret;
-        } catch (IOException e) {
+        } catch (Exception e) {
             LOGGER.warn(
                     "Problems when trying to read tag cache file. Using life query instead.",
                     e);
@@ -207,14 +207,14 @@ public class GitHubTagService {
                     "github-tags-" + repoOwner + "_" + repoName + ".json");
 
             ObjectMapper mapper = new ObjectMapper();
-            mapper.registerModules(new JavaTimeModule());
+
             mapper.writeValue(cacheFile, details);
             // Update the last cached time
             lastCachedTime = Instant.now();
 
             LOGGER.info("Using cached data from {}",
                     cacheFile.getAbsolutePath());
-        } catch (IOException e) {
+        } catch (Exception e) {
             LOGGER.warn("Failed to write tag cache file", e);
         }
     }
